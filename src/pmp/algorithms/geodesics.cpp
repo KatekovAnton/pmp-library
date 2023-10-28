@@ -541,7 +541,7 @@ unsigned int geodesics(SurfaceMesh& mesh, const std::vector<Vertex>& seed,
 
 void geodesics_heat(SurfaceMesh& mesh, const std::vector<Vertex>& seed)
 {
-    const unsigned int n = mesh.n_vertices();
+    const size_t n = mesh.n_vertices();
 
     // setup all matrices
     SparseMatrix G, D, L;

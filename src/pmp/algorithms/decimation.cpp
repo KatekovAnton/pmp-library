@@ -38,7 +38,7 @@ public:
     unsigned int size() { return (unsigned int)HeapVector::size(); }
 
     // reserve space for N entries
-    void reserve(unsigned int n) { HeapVector::reserve(n); }
+    void reserve(size_t n) { HeapVector::reserve(n); }
 
     // reset heap position to -1 (not in heap)
     void reset_heap_position(HeapEntry h)

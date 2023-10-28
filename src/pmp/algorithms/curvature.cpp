@@ -331,7 +331,7 @@ void CurvatureAnalyzer::smooth_curvatures(unsigned int iterations)
     L = -0.5 * D * L;
 
     // copy vertex curvatures to matrix
-    const int n = mesh_.n_vertices();
+    const size_t n = mesh_.n_vertices();
     DenseMatrix curv(n, 2);
     for (auto v : mesh_.vertices())
     {
@@ -366,11 +366,11 @@ void curvature_to_texture_coordinates(SurfaceMesh& mesh)
         values.push_back(curvatures[v]);
     }
     std::sort(values.begin(), values.end());
-    unsigned int n = values.size() - 1;
+    size_t n = values.size() - 1;
     // std::cout << "curvatures in [" << values[0] << ", " << values[n] << "]\n";
 
     // clamp upper/lower 5%
-    unsigned int i = n / 20;
+    size_t i = n / 20;
     Scalar kmin = values[i];
     Scalar kmax = values[n - 1 - i];
 

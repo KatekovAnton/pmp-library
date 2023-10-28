@@ -22,25 +22,25 @@ double triarea(const Eigen::Vector3d& p0, const Eigen::Vector3d& p1,
 // such that the resulting triangle fan minimizes the sum of squared triangle areas
 void compute_virtual_vertex(const DenseMatrix& poly, Eigen::VectorXd& weights)
 {
-    const int n = poly.rows();
+    const size_t n = poly.rows();
 
     // setup array of positions and edges
     std::vector<dvec3> x(n), d(n);
-    for (int i = 0; i < n; ++i)
+    for (size_t i = 0; i < n; ++i)
         x[i] = poly.row(i);
-    for (int i = 0; i < n; ++i)
+    for (size_t i = 0; i < n; ++i)
         d[i] = x[(i + 1) % n] - x[i];
 
     // setup matrix A and rhs b
     // see Equation (38) of "Polygon Laplacian made simple", Eurographics 2020
     DenseMatrix A(n + 1, n);
     Eigen::VectorXd b(n + 1);
-    for (int j = 0; j < n; ++j)
+    for (size_t j = 0; j < n; ++j)
     {
-        for (int i = j; i < n; ++i)
+        for (size_t i = j; i < n; ++i)
         {
             double Aij(0.0), bi(0.0);
-            for (int k = 0; k < n; ++k)
+            for (size_t k = 0; k < n; ++k)
             {
                 Aij += dot(cross(x[j], d[k]), cross(x[i], d[k]));
                 bi += dot(cross(x[i], d[k]), cross(x[k], d[k]));
@@ -49,7 +49,7 @@ void compute_virtual_vertex(const DenseMatrix& poly, Eigen::VectorXd& weights)
             b(i) = bi;
         }
     }
-    for (int j = 0; j < n; ++j)
+    for (size_t j = 0; j < n; ++j)
     {
         A(n, j) = 1.0;
     }
@@ -319,11 +319,11 @@ void divmass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M)
         {
             vertices.push_back(v);
         }
-        const int n = vertices.size();
+        const size_t n = vertices.size();
 
         // collect their positions
         polygon.resize(n, 3);
-        for (int i = 0; i < n; ++i)
+        for (size_t i = 0; i < n; ++i)
         {
             polygon.row(i) = (Eigen::Vector3d)mesh.position(vertices[i]);
         }
@@ -333,7 +333,7 @@ void divmass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M)
         compute_virtual_vertex(polygon, vweights);
         Eigen::Vector3d vvertex = polygon.transpose() * vweights;
 
-        for (int i = 0; i < n; ++i)
+        for (size_t i = 0; i < n; ++i)
         {
             const double area =
                 triarea(polygon.row(i), polygon.row((i + 1) % n), vvertex);
@@ -353,7 +353,7 @@ void divmass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M)
 
 void uniform_mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M)
 {
-    const unsigned int n = mesh.n_vertices();
+    const size_t n = mesh.n_vertices();
     Eigen::VectorXd diag(n);
     for (auto v : mesh.vertices())
         diag[v.idx()] = mesh.valence(v);
@@ -362,7 +362,7 @@ void uniform_mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M)
 
 void mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M)
 {
-    const int nv = mesh.n_vertices();
+    const size_t nv = mesh.n_vertices();
     std::vector<Vertex> vertices; // polygon vertices
     DenseMatrix polygon;          // positions of polygon vertices
     DiagonalMatrix Mpoly;         // local mass matrix
@@ -377,11 +377,11 @@ void mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M)
         {
             vertices.push_back(v);
         }
-        const int n = vertices.size();
+        const size_t n = vertices.size();
 
         // collect their positions
         polygon.resize(n, 3);
-        for (int i = 0; i < n; ++i)
+        for (size_t i = 0; i < n; ++i)
         {
             polygon.row(i) = (Eigen::Vector3d)mesh.position(vertices[i]);
         }
@@ -390,7 +390,7 @@ void mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M)
         polygon_mass_matrix(polygon, Mpoly);
 
         // assemble to global mass matrix
-        for (int k = 0; k < n; ++k)
+        for (size_t k = 0; k < n; ++k)
         {
             M.diagonal()[vertices[k].idx()] += Mpoly.diagonal()[k];
         }
@@ -399,7 +399,7 @@ void mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M)
 
 void uniform_laplace_matrix(const SurfaceMesh& mesh, SparseMatrix& L)
 {
-    const unsigned int n = mesh.n_vertices();
+    const size_t n = mesh.n_vertices();
 
     std::vector<Triplet> triplets;
     triplets.reserve(8 * n); // conservative estimate for triangle meshes
@@ -421,8 +421,8 @@ void uniform_laplace_matrix(const SurfaceMesh& mesh, SparseMatrix& L)
 
 void laplace_matrix(const SurfaceMesh& mesh, SparseMatrix& L, bool clamp)
 {
-    const int nv = mesh.n_vertices();
-    const int nf = mesh.n_faces();
+    const size_t nv = mesh.n_vertices();
+    const size_t nf = mesh.n_faces();
     std::vector<Vertex> vertices; // polygon vertices
     DenseMatrix polygon;          // positions of polygon vertices
     DenseMatrix Lpoly;            // local laplace matrix
@@ -438,11 +438,11 @@ void laplace_matrix(const SurfaceMesh& mesh, SparseMatrix& L, bool clamp)
         {
             vertices.push_back(v);
         }
-        const int n = vertices.size();
+        const size_t n = vertices.size();
 
         // collect their positions
         polygon.resize(n, 3);
-        for (int i = 0; i < n; ++i)
+        for (size_t i = 0; i < n; ++i)
         {
             polygon.row(i) = (Eigen::Vector3d)mesh.position(vertices[i]);
         }
@@ -451,9 +451,9 @@ void laplace_matrix(const SurfaceMesh& mesh, SparseMatrix& L, bool clamp)
         polygon_laplace_matrix(polygon, Lpoly);
 
         // assemble to global laplace matrix
-        for (int j = 0; j < n; ++j)
+        for (size_t j = 0; j < n; ++j)
         {
-            for (int k = 0; k < n; ++k)
+            for (size_t k = 0; k < n; ++k)
             {
                 triplets.emplace_back(vertices[k].idx(), vertices[j].idx(),
                                       -Lpoly(k, j));
@@ -491,11 +491,11 @@ void laplace_matrix(const SurfaceMesh& mesh, SparseMatrix& L, bool clamp)
 
 void gradient_matrix(const SurfaceMesh& mesh, SparseMatrix& G)
 {
-    const int nv = mesh.n_vertices();
+    const size_t nv = mesh.n_vertices();
 
     // how many virtual triangles will we have after refinement?
     // triangles are not refined, other polygons are.
-    unsigned int nt = 0;
+    size_t nt = 0;
     for (auto f : mesh.faces())
     {
         nt += mesh.valence(f);
@@ -508,7 +508,7 @@ void gradient_matrix(const SurfaceMesh& mesh, SparseMatrix& G)
     std::vector<Triplet> triplets;
     triplets.reserve(9 * nt);
 
-    unsigned int n_rows = 0;
+    size_t n_rows = 0;
 
     for (Face f : mesh.faces())
     {
@@ -518,11 +518,11 @@ void gradient_matrix(const SurfaceMesh& mesh, SparseMatrix& G)
         {
             vertices.push_back(v);
         }
-        const int n = vertices.size();
+        const size_t n = vertices.size();
 
         // collect their positions
         polygon.resize(n, 3);
-        for (int i = 0; i < n; ++i)
+        for (size_t i = 0; i < n; ++i)
         {
             polygon.row(i) = (Eigen::Vector3d)mesh.position(vertices[i]);
         }

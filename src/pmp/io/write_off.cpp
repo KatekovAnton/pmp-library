@@ -106,9 +106,9 @@ void write_off_binary(const SurfaceMesh& mesh,
 
     fprintf(out, "OFF BINARY\n");
     fclose(out);
-    uint32_t nv = mesh.n_vertices();
-    uint32_t nf = mesh.n_faces();
-    uint32_t ne = 0;
+    size_t nv = mesh.n_vertices();
+    size_t nf = mesh.n_faces();
+    size_t ne = 0;
 
     out = fopen(file.string().c_str(), "ab");
     tfwrite(out, nv);
@@ -123,11 +123,11 @@ void write_off_binary(const SurfaceMesh& mesh,
 
     for (auto f : mesh.faces())
     {
-        uint32_t valence = mesh.valence(f);
+        size_t valence = mesh.valence(f);
         tfwrite(out, valence);
         for (auto fv : mesh.vertices(f))
         {
-            uint32_t idx = fv.idx();
+            size_t idx = fv.idx();
             tfwrite(out, idx);
         }
     }

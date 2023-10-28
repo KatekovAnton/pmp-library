@@ -831,14 +831,14 @@ void Remeshing::flip_edges()
 {
     Vertex v0, v1, v2, v3;
     Halfedge h;
-    int val0, val1, val2, val3;
+    size_t val0, val1, val2, val3;
     int val_opt0, val_opt1, val_opt2, val_opt3;
-    int ve0, ve1, ve2, ve3, ve_before, ve_after;
+    size_t ve0, ve1, ve2, ve3, ve_before, ve_after;
     bool ok;
     int i;
 
     // precompute valences
-    auto valence = mesh_.add_vertex_property<int>("valence");
+    auto valence = mesh_.add_vertex_property<size_t>("valence");
     for (auto v : mesh_.vertices())
     {
         valence[v] = mesh_.valence(v);

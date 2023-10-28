@@ -89,18 +89,18 @@ void Triangulation::triangulate(Face f)
         {
             auto k = i + j;
             auto wmin = std::numeric_limits<Scalar>::max();
-            auto imin = -1;
+            int imin = -1;
 
             // find best split i < m < i+j
             for (size_t m = i + 1; m < k; ++m)
             {
                 Scalar w =
-                    weight_[i][m] + compute_weight(i, m, k) + weight_[m][k];
+                    weight_[i][m] + compute_weight(static_cast<int>(i), static_cast<int>(m), static_cast<int>(k)) + weight_[m][k];
 
                 if (w < wmin)
                 {
                     wmin = w;
-                    imin = m;
+                    imin = static_cast<int>(m);
                 }
             }
 

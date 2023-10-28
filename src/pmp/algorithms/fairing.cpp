@@ -96,7 +96,7 @@ void fair(SurfaceMesh& mesh, unsigned int k)
         throw InvalidInputException(what);
     }
 
-    const int n = mesh.n_vertices();
+    const size_t n = mesh.n_vertices();
 
     // build (zero) right-hand side B
     DenseMatrix B(n, 3);

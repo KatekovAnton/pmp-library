@@ -50,7 +50,7 @@ void setup_boundary_constraints(SurfaceMesh& mesh)
     } while (hh != mesh.halfedge(vh));
 
     // map boundary loop to unit circle in texture domain
-    unsigned int i, n = loop.size();
+    size_t i, n = loop.size();
     Scalar angle, l, length;
     TexCoord t;
 
@@ -248,9 +248,9 @@ void lscm_parameterization(SurfaceMesh& mesh)
     }
 
     // build matrix and rhs
-    const unsigned int nv2 = 2 * mesh.n_vertices();
-    const unsigned int nv = mesh.n_vertices();
-    const unsigned int n = free_vertices.size();
+    const size_t nv2 = 2 * mesh.n_vertices();
+    const size_t nv = mesh.n_vertices();
+    const size_t n = free_vertices.size();
     Vertex vi, vj;
     Halfedge hh;
     double si, sj0, sj1, sign;

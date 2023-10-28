@@ -59,8 +59,8 @@ DenseMatrix cholesky_solve(const SparseMatrix& A, const DenseMatrix& B,
     {
         for (SparseMatrix::InnerIterator iter(A, k); iter; ++iter)
         {
-            const int i = iter.row();
-            const int j = iter.col();
+            const size_t i = iter.row();
+            const size_t j = iter.col();
 
             if (idx[i] != -1) // row is dof
             {
@@ -158,7 +158,7 @@ void mesh_to_matrices(const pmp::SurfaceMesh& mesh, Eigen::MatrixXd& V,
         int j{0};
         auto i = f.idx();
         for (auto v : mesh.vertices(f))
-            F(i, j++) = v.idx();
+            F(i, j++) = static_cast<int>(v.idx());
     }
 }
 

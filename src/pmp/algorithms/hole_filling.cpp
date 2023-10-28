@@ -61,14 +61,14 @@ private:
     void fairing();
 
     // return i'th vertex of hole
-    Vertex hole_vertex(unsigned int i) const
+    Vertex hole_vertex(size_t i) const
     {
         assert(i < hole_.size());
         return mesh_.to_vertex(hole_[i]);
     }
 
     // return normal of face opposite to edge (i-1,i)
-    Normal opposite_normal(unsigned int i) const
+    Normal opposite_normal(size_t i) const
     {
         assert(i < hole_.size());
         return face_normal(mesh_, mesh_.face(mesh_.opposite_halfedge(hole_[i])));
@@ -188,7 +188,7 @@ void HoleFilling::triangulate_hole(Halfedge h)
 
         hole_.emplace_back(hit);
     } while ((hit = mesh_.next_halfedge(hit)) != h);
-    const int n = hole_.size();
+    const size_t n = hole_.size();
 
     // compute minimal triangulation by dynamic programming
     weight_.clear();
@@ -196,7 +196,7 @@ void HoleFilling::triangulate_hole(Halfedge h)
     index_.clear();
     index_.resize(n, std::vector<int>(n, 0));
 
-    int i, j, m, k, imin;
+    size_t i, j, m, k, imin;
     Weight w, wmin;
 
     // initialize 2-gons
@@ -219,7 +219,7 @@ void HoleFilling::triangulate_hole(Halfedge h)
             // find best split i < m < i+j
             for (m = i + 1; m < k; ++m)
             {
-                w = weight_[i][m] + compute_weight(i, m, k) + weight_[m][k];
+                w = weight_[i][m] + compute_weight(static_cast<int>(i), static_cast<int>(m), static_cast<int>(k)) + weight_[m][k];
                 if (w < wmin)
                 {
                     wmin = w;
@@ -228,7 +228,7 @@ void HoleFilling::triangulate_hole(Halfedge h)
             }
 
             weight_[i][k] = wmin;
-            index_[i][k] = imin;
+            index_[i][k] = static_cast<int>(imin);
         }
     }
 
@@ -301,12 +301,12 @@ HoleFilling::Weight HoleFilling::compute_weight(int i, int j, int k) const
 
 void HoleFilling::refine()
 {
-    const int n = hole_.size();
+    const size_t n = hole_.size();
     Scalar l, lmin, lmax;
 
     // compute target edge length
     l = 0.0;
-    for (int i = 0; i < n; ++i)
+    for (size_t i = 0; i < n; ++i)
     {
         l += distance(points_[hole_vertex(i)],
                       points_[hole_vertex((i + 1) % n)]);
@@ -400,9 +400,9 @@ void HoleFilling::flip_edges()
 {
     Vertex v0, v1, v2, v3;
     Halfedge h;
-    int val0, val1, val2, val3;
+    size_t val0, val1, val2, val3;
     int val_opt0, val_opt1, val_opt2, val_opt3;
-    int ve0, ve1, ve2, ve3, ve_before, ve_after;
+    size_t ve0, ve1, ve2, ve3, ve_before, ve_after;
     bool ok;
     int i;
 
@@ -463,8 +463,8 @@ void HoleFilling::flip_edges()
 void HoleFilling::relaxation()
 {
     // properties
-    VertexProperty<int> idx =
-        mesh_.add_vertex_property<int>("HoleFilling:idx", -1);
+    VertexProperty<size_t> idx =
+        mesh_.add_vertex_property<size_t>("HoleFilling:idx", -1);
 
     // collect free vertices
     std::vector<Vertex> vertices;
@@ -477,13 +477,13 @@ void HoleFilling::relaxation()
             vertices.emplace_back(v);
         }
     }
-    const int n = vertices.size();
+    const size_t n = vertices.size();
 
     // setup matrix & rhs
     Eigen::MatrixXd B(n, 3);
     using Triplet = Eigen::Triplet<double>;
     std::vector<Triplet> triplets;
-    for (int i = 0; i < n; ++i)
+    for (size_t i = 0; i < n; ++i)
     {
         Vertex v = vertices[i];
         Point b(0, 0, 0);
@@ -522,7 +522,7 @@ void HoleFilling::relaxation()
     }
 
     // copy solution to mesh vertices
-    for (int i = 0; i < n; ++i)
+    for (size_t i = 0; i < n; ++i)
     {
         points_[vertices[i]] = X.row(i);
     }

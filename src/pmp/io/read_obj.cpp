@@ -111,9 +111,10 @@ void read_obj(SurfaceMesh& mesh, const std::filesystem::path& file)
                     {
                         case 0: // vertex
                         {
-                            int idx = atoi(p0);
-                            if (idx < 0)
+                            size_t idx = atoi(p0);
+                            if (idx < 0) {
                                 idx = mesh.n_vertices() + idx + 1;
+                            }
                             vertices.emplace_back(idx - 1);
                             break;
                         }
