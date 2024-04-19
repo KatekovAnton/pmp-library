@@ -73,13 +73,13 @@ void read_stl(SurfaceMesh& mesh, const std::filesystem::path& file)
 
         // get file size minus header and element count
         fseek(fp, 0L, SEEK_END);
-        auto size = ftell(fp);
+        uint32_t size = ftell(fp);
         size -= 84;
         fclose(fp);
 
         // for each triangle we should have 4*12+2 bytes:
         // normal, x,y,z, attribute byte count
-        auto predicted = (4 * 12 + 2) * n_triangles;
+        uint32_t predicted = (4 * 12 + 2) * n_triangles;
 
         return size == predicted;
     };

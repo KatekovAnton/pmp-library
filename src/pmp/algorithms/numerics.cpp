@@ -55,7 +55,7 @@ DenseMatrix cholesky_solve(const SparseMatrix& A, const DenseMatrix& B,
     // update rhs with constraints
     std::vector<Triplet> triplets;
     triplets.reserve(A.nonZeros());
-    for (unsigned int k = 0; k < A.outerSize(); k++)
+    for (Eigen::Index k = 0; k < A.outerSize(); k++)
     {
         for (SparseMatrix::InnerIterator iter(A, k); iter; ++iter)
         {
