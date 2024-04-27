@@ -8,10 +8,10 @@ else()
   set_property(TARGET pmp PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif()
 
-find_package(OpenMP)
-if(OpenMP_CXX_FOUND)
-  target_link_libraries(pmp PUBLIC OpenMP::OpenMP_CXX)
-endif()
+# find_package(OpenMP)
+# if(OpenMP_CXX_FOUND)
+#  target_link_libraries(pmp PUBLIC OpenMP::OpenMP_CXX)
+# endif()
 
 set_target_properties(pmp PROPERTIES VERSION ${PROJECT_VERSION})
 
