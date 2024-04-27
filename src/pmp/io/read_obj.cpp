@@ -113,7 +113,7 @@ void read_obj(SurfaceMesh& mesh, const std::filesystem::path& file)
                         {
                             int idx = atoi(p0);
                             if (idx < 0) {
-                                idx = mesh.n_vertices() + idx + 1;
+                                idx = static_cast<int>(mesh.n_vertices()) + idx + 1;
                             }
                             vertices.emplace_back(idx - 1);
                             break;

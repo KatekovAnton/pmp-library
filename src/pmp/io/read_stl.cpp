@@ -73,7 +73,7 @@ void read_stl(SurfaceMesh& mesh, const std::filesystem::path& file)
 
         // get file size minus header and element count
         fseek(fp, 0L, SEEK_END);
-        uint32_t size = ftell(fp);
+        uint32_t size = static_cast<uint32_t>(ftell(fp));
         size -= 84;
         fclose(fp);
 

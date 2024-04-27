@@ -152,8 +152,8 @@ SurfaceMesh quad_sphere(size_t n_subdivisions)
     return mesh;
 }
 
-SurfaceMesh uv_sphere(const Point& center, Scalar radius, size_t n_slices,
-                      size_t n_stacks)
+SurfaceMesh uv_sphere(const Point& center, Scalar radius, IndexType n_slices,
+                      IndexType n_stacks)
 {
     SurfaceMesh mesh;
 
@@ -178,8 +178,8 @@ SurfaceMesh uv_sphere(const Point& center, Scalar radius, size_t n_slices,
     auto v1 = mesh.add_vertex(Point(center[0], center[1] - radius, center[2]));
 
     // add top / bottom triangles
-    size_t i0, i1;
-    for (size_t i = 0; i < n_slices; ++i)
+    IndexType i0, i1;
+    for (IndexType i = 0; i < n_slices; ++i)
     {
         i0 = i + 1;
         i1 = (i + 1) % n_slices + 1;
@@ -191,12 +191,12 @@ SurfaceMesh uv_sphere(const Point& center, Scalar radius, size_t n_slices,
     }
 
     // add quads per stack / slice
-    size_t i2, i3;
-    for (size_t j = 0; j < n_stacks - 2; ++j)
+    IndexType i2, i3;
+    for (IndexType j = 0; j < n_stacks - 2; ++j)
     {
-        size_t idx0 = j * n_slices + 1;
-        size_t idx1 = (j + 1) * n_slices + 1;
-        for (size_t i = 0; i < n_slices; ++i)
+        IndexType idx0 = j * n_slices + 1;
+        IndexType idx1 = (j + 1) * n_slices + 1;
+        for (IndexType i = 0; i < n_slices; ++i)
         {
             i0 = idx0 + i;
             i1 = idx0 + (i + 1) % n_slices;
@@ -209,7 +209,7 @@ SurfaceMesh uv_sphere(const Point& center, Scalar radius, size_t n_slices,
     return mesh;
 }
 
-SurfaceMesh plane(size_t resolution)
+SurfaceMesh plane(IndexType resolution)
 {
     assert(resolution >= 1);
 
@@ -229,9 +229,9 @@ SurfaceMesh plane(size_t resolution)
     }
 
     // generate faces
-    for (size_t i = 0; i < resolution; i++)
+    for (IndexType i = 0; i < resolution; i++)
     {
-        for (size_t j = 0; j < resolution; j++)
+        for (IndexType j = 0; j < resolution; j++)
         {
             auto v0 = Vertex(j + i * (resolution + 1));
             auto v1 = Vertex(v0.idx() + resolution + 1);
@@ -266,9 +266,9 @@ SurfaceMesh cone(size_t n_subdivisions, Scalar radius, Scalar height)
     auto v0 = mesh.add_vertex(Point(0.0, 0.0, height));
 
     // generate triangular faces
-    for (size_t i = 0; i < n_subdivisions; i++)
+    for (IndexType i = 0; i < n_subdivisions; i++)
     {
-        auto ii = (i + 1) % n_subdivisions;
+        IndexType ii = (i + 1) % n_subdivisions;
         mesh.add_triangle(v0, Vertex(i), Vertex(ii));
     }
 
@@ -303,12 +303,12 @@ SurfaceMesh cylinder(size_t n_subdivisions, Scalar radius, Scalar height)
     }
 
     // add faces around the cylinder
-    for (size_t i = 0; i < n_subdivisions; i++)
+    for (IndexType i = 0; i < n_subdivisions; i++)
     {
-        auto ii = i * 2;
-        auto jj = (ii + 2) % (n_subdivisions * 2);
-        auto kk = (ii + 3) % (n_subdivisions * 2);
-        auto ll = ii + 1;
+        IndexType ii = i * 2;
+        IndexType jj = (ii + 2) % (n_subdivisions * 2);
+        IndexType kk = (ii + 3) % (n_subdivisions * 2);
+        IndexType ll = ii + 1;
         mesh.add_quad(Vertex(ii), Vertex(jj), Vertex(kk), Vertex(ll));
     }
 
@@ -324,7 +324,7 @@ SurfaceMesh cylinder(size_t n_subdivisions, Scalar radius, Scalar height)
     return mesh;
 }
 
-SurfaceMesh torus(size_t radial_resolution, size_t tubular_resolution,
+SurfaceMesh torus(IndexType radial_resolution, IndexType tubular_resolution,
                   Scalar radius, Scalar thickness)
 {
     assert(radial_resolution >= 3);
@@ -347,16 +347,16 @@ SurfaceMesh torus(size_t radial_resolution, size_t tubular_resolution,
     }
 
     // add quad faces
-    for (size_t i = 0; i < radial_resolution; i++)
+    for (IndexType i = 0; i < radial_resolution; i++)
     {
         auto i_next = (i + 1) % radial_resolution;
-        for (size_t j = 0; j < tubular_resolution; j++)
+        for (IndexType j = 0; j < tubular_resolution; j++)
         {
-            auto j_next = (j + 1) % tubular_resolution;
-            auto i0 = i * tubular_resolution + j;
-            auto i1 = i * tubular_resolution + j_next;
-            auto i2 = i_next * tubular_resolution + j_next;
-            auto i3 = i_next * tubular_resolution + j;
+            IndexType j_next = (j + 1) % tubular_resolution;
+            IndexType i0 = i * tubular_resolution + j;
+            IndexType i1 = i * tubular_resolution + j_next;
+            IndexType i2 = i_next * tubular_resolution + j_next;
+            IndexType i3 = i_next * tubular_resolution + j;
             mesh.add_quad(Vertex(i0), Vertex(i1), Vertex(i2), Vertex(i3));
         }
     }

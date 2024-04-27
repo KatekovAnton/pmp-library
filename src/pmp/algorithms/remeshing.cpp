@@ -671,8 +671,8 @@ void Remeshing::split_long_edges()
 
                 if (is_feature)
                 {
-                    enew = is_boundary ? Edge(mesh_.n_edges() - 2)
-                                       : Edge(mesh_.n_edges() - 3);
+                    enew = is_boundary ? Edge(static_cast<IndexType>(mesh_.n_edges()) - 2)
+                                       : Edge(static_cast<IndexType>(mesh_.n_edges()) - 3);
                     efeature_[enew] = true;
                     vfeature_[vnew] = true;
                 }

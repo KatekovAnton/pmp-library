@@ -1139,10 +1139,10 @@ void SurfaceMesh::garbage_collection()
     if (!has_garbage_)
         return;
 
-    auto nV = vertices_size();
-    auto nE = edges_size();
-    auto nH = halfedges_size();
-    auto nF = faces_size();
+    IndexType nV = static_cast<IndexType>(vertices_size());
+    IndexType nE = static_cast<IndexType>(edges_size());
+    IndexType nH = static_cast<IndexType>(halfedges_size());
+    IndexType nF = static_cast<IndexType>(faces_size());
 
     // setup handle mapping
     VertexProperty<Vertex> vmap =
@@ -1150,18 +1150,18 @@ void SurfaceMesh::garbage_collection()
     HalfedgeProperty<Halfedge> hmap =
         add_halfedge_property<Halfedge>("h:garbage-collection");
     FaceProperty<Face> fmap = add_face_property<Face>("f:garbage-collection");
-    for (size_t i = 0; i < nV; ++i)
+    for (IndexType i = 0; i < nV; ++i)
         vmap[Vertex(i)] = Vertex(i);
-    for (size_t i = 0; i < nH; ++i)
+    for (IndexType i = 0; i < nH; ++i)
         hmap[Halfedge(i)] = Halfedge(i);
-    for (size_t i = 0; i < nF; ++i)
+    for (IndexType i = 0; i < nF; ++i)
         fmap[Face(i)] = Face(i);
 
     // remove deleted vertices
     if (nV > 0)
     {
-        size_t i0 = 0;
-        size_t i1 = nV - 1;
+        IndexType i0 = 0;
+        IndexType i1 = nV - 1;
 
         while (true)
         {
@@ -1184,8 +1184,8 @@ void SurfaceMesh::garbage_collection()
     // remove deleted edges
     if (nE > 0)
     {
-        size_t i0 = 0;
-        size_t i1 = nE - 1;
+        IndexType i0 = 0;
+        IndexType i1 = nE - 1;
 
         while (true)
         {
@@ -1211,8 +1211,8 @@ void SurfaceMesh::garbage_collection()
     // remove deleted faces
     if (nF > 0)
     {
-        size_t i0 = 0;
-        size_t i1 = nF - 1;
+        IndexType i0 = 0;
+        IndexType i1 = nF - 1;
 
         while (true)
         {
@@ -1233,7 +1233,7 @@ void SurfaceMesh::garbage_collection()
     }
 
     // update vertex connectivity
-    for (size_t i = 0; i < nV; ++i)
+    for (IndexType i = 0; i < nV; ++i)
     {
         auto v = Vertex(i);
         if (!is_isolated(v))
@@ -1241,7 +1241,7 @@ void SurfaceMesh::garbage_collection()
     }
 
     // update halfedge connectivity
-    for (size_t i = 0; i < nH; ++i)
+    for (IndexType i = 0; i < nH; ++i)
     {
         auto h = Halfedge(i);
         set_vertex(h, vmap[to_vertex(h)]);
@@ -1251,7 +1251,7 @@ void SurfaceMesh::garbage_collection()
     }
 
     // update handles of faces
-    for (size_t i = 0; i < nF; ++i)
+    for (IndexType i = 0; i < nF; ++i)
     {
         auto f = Face(i);
         set_halfedge(f, hmap[halfedge(f)]);
